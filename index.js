@@ -5,7 +5,7 @@ var exec = require('child_process').exec;
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
-  homebridge.registerAccessory('homebridge-windowshades-command', 'WindowShadesCommand', WindowShadesAccessory);
+  homebridge.registerAccessory('homebridge-windowshades-command', 'WindowShadesCommand', WindowShadesCmdAccessory);
 };
 
 function WindowShadesCmdAccessory(log, config) {
