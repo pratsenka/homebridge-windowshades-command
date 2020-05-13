@@ -2,7 +2,7 @@
 [![mit license](https://badgen.net/badge/license/MIT/red)](https://github.com/apexad/homebridge-mysmartblinds-bridge/blob/master/LICENSE)
 [![npm](https://badgen.net/npm/v/homebridge-garagedoor-command)](https://www.npmjs.com/package/homebridge-garagedoor-command)
 [![npm](https://badgen.net/npm/dt/homebridge-garagedoor-command)](https://www.npmjs.com/package/homebridge-garagedoor-command)
-[![npm](https://badgen.net/npm/dt/homebridge-windowshades-command)](https://www.npmjs.com/package/homebridge-windowshades-command)
+[![npm](https://badgen.net/npm/dt/homebridge-garagedoor-command)](https://www.npmjs.com/package/homebridge-windowshades-command)
 
 
 [Homebridge](https://github.com/homebridge/homebridge) plugin to control a window shades using command line functions  
