@@ -1,23 +1,30 @@
 {
   "name": "homebridge-windowshades-command",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Window Shades plugin for homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
     "homebridge-plugin",
     "window",
-    "window-shades"
+    "window-shades",
+    "window blinds"
   ],
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
   },
-  "author": {
-    "name": "Andrei Pratsenka"
-  },
+  "author": "Andrei Pratsenka",
   "repository": {
     "type": "git",
     "url": "git://github.com/pratsenka/homebridge-windowshades-command.git"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "bugs": {
+    "url": "https://github.com/pratsenka/homebridge-windowshades-command/issues"
+  },
+  "homepage": "https://github.com/pratsenka/homebridge-windowshades-command#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
