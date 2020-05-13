@@ -1,12 +1,12 @@
 {
-  "name": "homebridge-garagedoor-command",
-  "version": "0.4.0",
-  "description": "Garage Door plugin for homebridge: https://github.com/nfarina/homebridge",
+  "name": "homebridge-windowshades-command",
+  "version": "0.0.1",
+  "description": "Window Shades plugin for homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
     "homebridge-plugin",
-    "garage",
-    "garage-door"
+    "window",
+    "window-shades"
   ],
   "engines": {
     "node": ">=0.12.0",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/apexad/homebridge-garagedoor-command.git"
+    "url": "git://github.com/pratsenka/homebridge-windowshades-command.git"
   },
   "dependencies": {}
 }
