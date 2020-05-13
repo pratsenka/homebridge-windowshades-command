@@ -5,10 +5,10 @@ var exec = require('child_process').exec;
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
-  homebridge.registerAccessory('homebridge-garagedoor-command', 'GarageCommand', GarageCmdAccessory);
+  homebridge.registerAccessory('homebridge-windowshades-command', 'WindowShadesCommand', WindowShadesAccessory);
 };
 
-function GarageCmdAccessory(log, config) {
+function WindowShadesCmdAccessory(log, config) {
   this.log = log;
   this.name = config.name;
   this.openCommand = config.open;
@@ -20,7 +20,7 @@ function GarageCmdAccessory(log, config) {
   this.logPolling = config.log_polling || false;
 }
 
-GarageCmdAccessory.prototype.setState = function(isClosed, callback, context) {
+WindowShadesCmdAccessory.prototype.setState = function(isClosed, callback, context) {
   if (context === 'pollState') {
     // The state has been updated by the pollState command - don't run the open/close command
     callback(null);
@@ -50,18 +50,18 @@ GarageCmdAccessory.prototype.setState = function(isClosed, callback, context) {
       } else {
         accessory.log('Set ' + accessory.name + ' to ' + state);
         if (stdout.indexOf('OPENING') > -1) {
-          accessory.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.OPENING);
+          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.OPENING);
           setTimeout(
             function() {
-              accessory.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.OPEN);
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.OPEN);
             },
             accessory.statusUpdateDelay * 1000
           );
         } else if (stdout.indexOf('CLOSING') > -1) {
-          accessory.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSING);
+          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.CLOSING);
           setTimeout(
             function() {
-              accessory.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.CLOSED);
             },
             accessory.statusUpdateDelay * 1000
           );
@@ -71,7 +71,7 @@ GarageCmdAccessory.prototype.setState = function(isClosed, callback, context) {
   });
 };
 
-GarageCmdAccessory.prototype.getState = function(callback) {
+WindowShadesCmdAccessory.prototype.getState = function(callback) {
   var accessory = this;
   var command = accessory.stateCommand;
 
@@ -88,7 +88,7 @@ GarageCmdAccessory.prototype.getState = function(callback) {
         accessory.log('State of ' + accessory.name + ' is: ' + state);
       }
 
-      callback(null, Characteristic.CurrentDoorState[state]);
+      callback(null, Characteristic.CurrentShadesState[state]);
     }
 
     if (accessory.pollStateDelay > 0) {
@@ -97,7 +97,7 @@ GarageCmdAccessory.prototype.getState = function(callback) {
   });
 };
 
-GarageCmdAccessory.prototype.pollState = function() {
+WindowShadesCmdAccessory.prototype.pollState = function() {
   var accessory = this;
 
   // Clear any existing timer
@@ -114,37 +114,37 @@ GarageCmdAccessory.prototype.pollState = function() {
           return;
         }
 
-        if (currentDeviceState === Characteristic.CurrentDoorState.OPEN || currentDeviceState === Characteristic.CurrentDoorState.CLOSED) {
+        if (currentDeviceState === Characteristic.CurrentShadesState.OPEN || currentDeviceState === Characteristic.CurrentShadesState.CLOSED) {
           // Set the target state to match the actual state
-          // If this isn't done the Home app will show the door in the wrong transitioning state (opening/closing)
-          accessory.garageDoorService.getCharacteristic(Characteristic.TargetDoorState)
+          // If this isn't done the Home app will show the shades in the wrong transitioning state (opening/closing)
+          accessory.windowShadesService.getCharacteristic(Characteristic.TargetShadesState)
             .setValue(currentDeviceState, null, 'pollState');
         }
-        accessory.garageDoorService.setCharacteristic(Characteristic.CurrentDoorState, currentDeviceState);
+        accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, currentDeviceState);
       })
     },
     accessory.pollStateDelay * 1000
   );
 }
 
-GarageCmdAccessory.prototype.getServices = function() {
+WindowShadesCmdAccessory.prototype.getServices = function() {
   this.informationService = new Service.AccessoryInformation();
-  this.garageDoorService = new Service.GarageDoorOpener(this.name);
+  this.windowShadesService = new Service.WindowCovering(this.name);
 
   this.informationService
-  .setCharacteristic(Characteristic.Manufacturer, 'Garage Command')
+  .setCharacteristic(Characteristic.Manufacturer, 'Shades Command')
   .setCharacteristic(Characteristic.Model, 'Homebridge Plugin')
   .setCharacteristic(Characteristic.SerialNumber, '001');
 
-  this.garageDoorService.getCharacteristic(Characteristic.TargetDoorState)
+  this.windowShadesService.getCharacteristic(Characteristic.TargetShadesState)
   .on('set', this.setState.bind(this));
 
   if (this.stateCommand) {
-    this.garageDoorService.getCharacteristic(Characteristic.CurrentDoorState)
+    this.windowShadesService.getCharacteristic(Characteristic.CurrentShadesState)
     .on('get', this.getState.bind(this));
-    this.garageDoorService.getCharacteristic(Characteristic.TargetDoorState)
+    this.windowShadesService.getCharacteristic(Characteristic.TargetShadesState)
     .on('get', this.getState.bind(this));
   }
 
-  return [this.informationService, this.garageDoorService];
+  return [this.informationService, this.windowShadesService];
 };
