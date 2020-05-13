@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "GarageCommand",
+  "pluginAlias": "WindowShadesCommand",
   "pluginType": "accessory",
   "singular": false,
   "schema": {
@@ -8,21 +8,21 @@
       "name": {
         "title": "Name",
         "type": "string",
-        "default": "Garage Door",
+        "default": "Window Shades",
         "required": true
       },
       "open": {
-        "title": "Command to open door",
+        "title": "Command to open shades",
         "type": "string",
         "required": true
       },
       "close": {
-        "title": "Command to close door",
+        "title": "Command to close shades",
         "type": "string",
         "required": true
       },
       "state": {
-        "title": "Command to get state/satus of the door",
+        "title": "Command to get state/satus of the shades",
         "type": "string",
         "required": true
       },
@@ -58,7 +58,7 @@
       "type": "fieldset",
       "expandable": true,
       "title": "Polling Settings",
-      "description": "Options for polling Garage Door when Home app is closed",
+      "description": "Options for polling Window Shades when Home app is closed",
       "items": [
         "poll_state_delay",
         "log_polling"
