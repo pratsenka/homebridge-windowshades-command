@@ -63,11 +63,12 @@ WindowShadesCmdAccessory.prototype.setState = function(value, callback, context)
           setTimeout(
             function() {
               accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0);
-              accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                },
+              accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                
+            },
             accessory.statusUpdateDelay * 1000
           );
         } else {
-                accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                },
+                accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);   
                 if (stdout.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0)
                 else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.100) ;
         }
