@@ -20,7 +20,7 @@ function WindowShadesCmdAccessory(log, config) {
   this.logPolling = config.log_polling || false;
 }
 
-WindowShadesCmdAccessory.prototype.setState = function(isClosed, callback, context) {
+WindowShadesCmdAccessory.prototype.setState = function(value, callback, context) {
   if (context === 'pollState') {
     // The state has been updated by the pollState command - don't run the open/close command
     callback(null);
@@ -28,7 +28,7 @@ WindowShadesCmdAccessory.prototype.setState = function(isClosed, callback, conte
   }
 
   var accessory = this;
-  var state = isClosed ? 'close' : 'open';
+  var state = value> this.getCharacteristic(Characteristic.CurrentPosition)? 'close' : 'open';
   var prop = state + 'Command';
   var command = accessory[prop];
   accessory.log('Commnand to run: ' + command);
@@ -50,19 +50,20 @@ WindowShadesCmdAccessory.prototype.setState = function(isClosed, callback, conte
       } else {
         accessory.log('Set ' + accessory.name + ' to ' + state);
         if (stdout.indexOf('OPENING') > -1) {
-          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.OPENING);
+          accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.INCREASING);
           setTimeout(
             function() {
-              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.OPEN);
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, 100);
+              accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);              
             },
             accessory.statusUpdateDelay * 1000
           );
         } else if (stdout.indexOf('CLOSING') > -1) {
-          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.CLOSING);
+          accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.DECREASING);
           setTimeout(
             function() {
-              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.CLOSED);
-            },
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0);
+              accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                },
             accessory.statusUpdateDelay * 1000
           );
         }
@@ -80,12 +81,13 @@ WindowShadesCmdAccessory.prototype.getState = function(callback) {
       accessory.log('Error: ' + err);
       callback(err || new Error('Error getting state of ' + accessory.name));
     } else {
-      var state = stdout.toString('utf-8').trim();
-      if (state === 'STOPPED' && accessory.ignoreErrors) {
-        state = 'CLOSED';
+      var statestr = stdout.toString('utf-8').trim();
+      if (statestr === 'STOPPED' && accessory.ignoreErrors) {
+        state = 0;
       }
+      state = statestr === 'OPEN'? 100 : 0;
       if (accessory.logPolling) {
-        accessory.log('State of ' + accessory.name + ' is: ' + state);
+        accessory.log('State of ' + accessory.name + ' is: ' + statestr);
       }
 
       callback(null, Characteristic.CurrentPosition[state]);
@@ -114,7 +116,7 @@ WindowShadesCmdAccessory.prototype.pollState = function() {
           return;
         }
 
-        if (currentDeviceState === Characteristic.CurrentPosition.OPEN || currentDeviceState === Characteristic.CurrentPosition.CLOSED) {
+        if (currentDeviceState === 100 || currentDeviceState === 0) {
           // Set the target state to match the actual state
           // If this isn't done the Home app will show the shades in the wrong transitioning state (opening/closing)
           accessory.windowShadesService.getCharacteristic(Characteristic.TargetPosition)
