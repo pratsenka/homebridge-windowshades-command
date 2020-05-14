@@ -82,15 +82,15 @@ WindowShadesCmdAccessory.prototype.getState = function(callback) {
       callback(err || new Error('Error getting state of ' + accessory.name));
     } else {
       var statestr = stdout.toString('utf-8').trim();
-      if (statestr === 'STOPPED' && accessory.ignoreErrors) {
-        state = 0;
-      }
+ //     if (statestr === 'STOPPED' && accessory.ignoreErrors) {
+ //      state = 0;
+ //     }
       state = statestr === 'OPEN'? 100 : 0;
       if (accessory.logPolling) {
         accessory.log('State of ' + accessory.name + ' is: ' + statestr);
       }
 
-      callback(null, Characteristic.CurrentPosition[state]);
+      callback(null, state);
     }
 
     if (accessory.pollStateDelay > 0) {
