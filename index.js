@@ -66,6 +66,10 @@ WindowShadesCmdAccessory.prototype.setState = function(value, callback, context)
               accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                },
             accessory.statusUpdateDelay * 1000
           );
+        } else {
+                accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                },
+                if (stdout.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0)
+                else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.100) ;
         }
        callback(null);
      }
@@ -86,6 +90,10 @@ WindowShadesCmdAccessory.prototype.getState = function(callback) {
  //      state = 0;
  //     }
       state = statestr === 'OPEN'? 100 : 0;
+
+     if (statestr.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0)
+     else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.100) ;
+     
       if (accessory.logPolling) {
         accessory.log('State of ' + accessory.name + ' is: ' + statestr);
       }
