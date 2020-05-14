@@ -62,15 +62,15 @@ WindowShadesCmdAccessory.prototype.setState = function(value, callback, context)
           accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.DECREASING);
           setTimeout(
             function() {
-              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0);
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, 0);
               accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);                
             },
             accessory.statusUpdateDelay * 1000
           );
         } else {
                 accessory.windowShadesService.setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED);   
-                if (stdout.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0)
-                else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.100) ;
+                if (stdout.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, 0)
+                else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, 100) ;
         }
        callback(null);
      }
@@ -92,8 +92,8 @@ WindowShadesCmdAccessory.prototype.getState = function(callback) {
  //     }
       state = statestr === 'OPEN'? 100 : 0;
 
-     if (statestr.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.0)
-     else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.100) ;
+     if (statestr.indexOf('CLOSED') > -1) accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, 0)
+     else accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, 100) ;
      
       if (accessory.logPolling) {
         accessory.log('State of ' + accessory.name + ' is: ' + statestr);
