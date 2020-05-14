@@ -50,18 +50,18 @@ WindowShadesCmdAccessory.prototype.setState = function(isClosed, callback, conte
       } else {
         accessory.log('Set ' + accessory.name + ' to ' + state);
         if (stdout.indexOf('OPENING') > -1) {
-          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.OPENING);
+          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.OPENING);
           setTimeout(
             function() {
-              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.OPEN);
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.OPEN);
             },
             accessory.statusUpdateDelay * 1000
           );
         } else if (stdout.indexOf('CLOSING') > -1) {
-          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.CLOSING);
+          accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.CLOSING);
           setTimeout(
             function() {
-              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, Characteristic.CurrentShadesState.CLOSED);
+              accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, Characteristic.CurrentPosition.CLOSED);
             },
             accessory.statusUpdateDelay * 1000
           );
@@ -88,7 +88,7 @@ WindowShadesCmdAccessory.prototype.getState = function(callback) {
         accessory.log('State of ' + accessory.name + ' is: ' + state);
       }
 
-      callback(null, Characteristic.CurrentShadesState[state]);
+      callback(null, Characteristic.CurrentPosition[state]);
     }
 
     if (accessory.pollStateDelay > 0) {
@@ -114,13 +114,13 @@ WindowShadesCmdAccessory.prototype.pollState = function() {
           return;
         }
 
-        if (currentDeviceState === Characteristic.CurrentShadesState.OPEN || currentDeviceState === Characteristic.CurrentShadesState.CLOSED) {
+        if (currentDeviceState === Characteristic.CurrentPosition.OPEN || currentDeviceState === Characteristic.CurrentPosition.CLOSED) {
           // Set the target state to match the actual state
           // If this isn't done the Home app will show the shades in the wrong transitioning state (opening/closing)
-          accessory.windowShadesService.getCharacteristic(Characteristic.TargetShadesState)
+          accessory.windowShadesService.getCharacteristic(Characteristic.TargetPosition)
             .setValue(currentDeviceState, null, 'pollState');
         }
-        accessory.windowShadesService.setCharacteristic(Characteristic.CurrentShadesState, currentDeviceState);
+        accessory.windowShadesService.setCharacteristic(Characteristic.CurrentPosition, currentDeviceState);
       })
     },
     accessory.pollStateDelay * 1000
@@ -136,13 +136,13 @@ WindowShadesCmdAccessory.prototype.getServices = function() {
   .setCharacteristic(Characteristic.Model, 'Homebridge Plugin')
   .setCharacteristic(Characteristic.SerialNumber, '001');
 
-  this.windowShadesService.getCharacteristic(Characteristic.TargetShadesState)
+  this.windowShadesService.getCharacteristic(Characteristic.PositionState)
   .on('set', this.setState.bind(this));
 
   if (this.stateCommand) {
-    this.windowShadesService.getCharacteristic(Characteristic.CurrentShadesState)
+    this.windowShadesService.getCharacteristic(Characteristic.CurrentPosition)
     .on('get', this.getState.bind(this));
-    this.windowShadesService.getCharacteristic(Characteristic.TargetShadesState)
+    this.windowShadesService.getCharacteristic(Characteristic.TargetPosition)
     .on('get', this.getState.bind(this));
   }
 
