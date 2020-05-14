@@ -21,6 +21,8 @@ function WindowShadesCmdAccessory(log, config) {
 }
 
 WindowShadesCmdAccessory.prototype.setState = function(value, callback, context) {
+ accessory.log('Value: %n, Context %s',value, context);
+  
   if (context === 'pollState') {
     // The state has been updated by the pollState command - don't run the open/close command
     callback(null);
